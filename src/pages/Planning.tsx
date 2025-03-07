@@ -14,38 +14,34 @@ import "./Planning.css"; // Import custom CSS file
 
 const Planning = () => {
   const { stores, skus, planningData, setPlanningData } = useStore();
-  const [rowData, setRowData] = useState([]);
+  const [rowData, setRowData] = useState<PlanningData[]>([]);
 
   useEffect(() => {
-    if (planningData.length === 0) {
-      const data = [];
-      stores.forEach((store) => {
-        skus.forEach((sku) => {
-          const row = {
-            store: store.name,
-            sku: sku.sku,
-            price: sku.price,
-            cost: sku.cost,
-          };
-          for (let month = 1; month <= config.numberOfMonths; month++) {
-            for (let week = 1; week <= 4; week++) {
-              row[`salesUnits_M${month}_W${week}`] = 0;
-              row[`salesDollars_M${month}_W${week}`] = 0;
-              row[`gmDollars_M${month}_W${week}`] = 0;
-              row[`gmPercentage_M${month}_W${week}`] = 0;
-            }
+    const data: PlanningData[] = [];
+    stores.forEach((store) => {
+      skus.forEach((sku) => {
+        const row: PlanningData = {
+          store: store.name,
+          sku: sku.sku,
+          price: sku.price,
+          cost: sku.cost,
+        };
+        for (let month = 1; month <= config.numberOfMonths; month++) {
+          for (let week = 1; week <= 4; week++) {
+            row[`salesUnits_M${month}_W${week}`] = 0;
+            row[`salesDollars_M${month}_W${week}`] = 0;
+            row[`gmDollars_M${month}_W${week}`] = 0;
+            row[`gmPercentage_M${month}_W${week}`] = 0;
           }
-          data.push(row);
-        });
+        }
+        data.push(row);
       });
-      setRowData(data);
-      setPlanningData(data); // Store the planning data in Zustand store
-    } else {
-      setRowData(planningData);
-    }
-  }, [stores, skus, planningData, setPlanningData]);
+    });
+    setRowData(data);
+    setPlanningData(data); // Store the planning data in Zustand store
+  }, [stores, skus, setPlanningData]);
 
-  const onCellValueChanged = (params) => {
+  const onCellValueChanged = (params: any) => {
     const { data, colDef, newValue } = params;
     const field = colDef.field;
 
@@ -97,18 +93,18 @@ const Planning = () => {
             {
               headerName: "Sales Dollars",
               field: `salesDollars_M${month}_W${week}`,
-              valueFormatter: (params) => `$${params.value.toFixed(2)}`,
+              valueFormatter: (params: any) => `$${params.value.toFixed(2)}`,
             },
             {
               headerName: "GM Dollars",
               field: `gmDollars_M${month}_W${week}`,
-              valueFormatter: (params) => `$${params.value.toFixed(2)}`,
+              valueFormatter: (params: any) => `$${params.value.toFixed(2)}`,
             },
             {
               headerName: "GM %",
               field: `gmPercentage_M${month}_W${week}`,
-              valueFormatter: (params) => `${params.value.toFixed(2)}%`,
-              cellStyle: (params) => ({
+              valueFormatter: (params: any) => `${params.value.toFixed(2)}%`,
+              cellStyle: (params: any) => ({
                 backgroundColor: getGMPercentageColor(params.value),
               }),
             },

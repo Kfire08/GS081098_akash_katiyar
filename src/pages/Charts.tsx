@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useStore } from "../zustand/useStore";
 import {
-  BarChart,
+  ComposedChart,
   Bar,
-  LineChart,
   Line,
   XAxis,
   YAxis,
@@ -12,28 +11,34 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { config } from "../config/config"; // Import the config file
 
 const Charts = () => {
   const { stores, planningData } = useStore();
   const [selectedStore, setSelectedStore] = useState(stores[0]?.name || "");
 
-  const handleStoreChange = (event) => {
+  const handleStoreChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedStore(event.target.value);
   };
 
-  const data = [];
-  for (let week = 1; week <= 52; week++) {
-    const weekData = { week: `W${week}` };
+  const data: { week: string; gmDollars: number; gmPercentage: number }[] = [];
+  const totalWeeks = config.numberOfMonths * 4; // Calculate total number of weeks based on number of months
+
+  for (let week = 1; week <= totalWeeks; week++) {
+    const weekData = { week: `W${week}`, gmDollars: 0, gmPercentage: 0 };
     let totalSalesDollars = 0;
     let totalGMDollars = 0;
 
     planningData.forEach((row) => {
       if (row.store === selectedStore) {
-        const salesUnits = row[`salesUnits_M1_W${week}`] || 0;
-        const salesDollars = row[`salesDollars_M1_W${week}`] || 0;
-        const gmDollars = row[`gmDollars_M1_W${week}`] || 0;
-        totalSalesDollars += salesDollars;
-        totalGMDollars += gmDollars;
+        const salesUnits =
+          row[`salesUnits_M${Math.ceil(week / 4)}_W${week % 4 || 4}`] || 0;
+        const salesDollars =
+          row[`salesDollars_M${Math.ceil(week / 4)}_W${week % 4 || 4}`] || 0;
+        const gmDollars =
+          row[`gmDollars_M${Math.ceil(week / 4)}_W${week % 4 || 4}`] || 0;
+        totalSalesDollars += Number(salesDollars);
+        totalGMDollars += Number(gmDollars);
       }
     });
 
@@ -59,7 +64,7 @@ const Charts = () => {
           ))}
         </select>
         <ResponsiveContainer width="100%" height={600}>
-          <BarChart
+          <ComposedChart
             data={data}
             margin={{
               top: 5,
@@ -81,14 +86,17 @@ const Charts = () => {
               orientation="right"
               stroke="#ff7300"
               tickFormatter={(value) => `${value}%`}
+              domain={[0, 100]}
             />
             <Tooltip
               formatter={(value, name) => {
-                if (name === "gmDollars") {
-                  return [`$${value.toFixed(2)}`, "GM Dollars"];
-                }
-                if (name === "gmPercentage") {
-                  return [`${value.toFixed(2)}%`, "GM Percentage"];
+                if (typeof value === "number") {
+                  if (name === "gmDollars") {
+                    return [`$${value.toFixed(2)}`, "GM Dollars"];
+                  }
+                  if (name === "gmPercentage") {
+                    return [`${value.toFixed(2)}%`, "GM Percentage"];
+                  }
                 }
                 return value;
               }}
@@ -100,8 +108,9 @@ const Charts = () => {
               type="monotone"
               dataKey="gmPercentage"
               stroke="#ff7300"
+              activeDot={{ r: 8 }}
             />
-          </BarChart>
+          </ComposedChart>
         </ResponsiveContainer>
       </div>
     </div>

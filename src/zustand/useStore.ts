@@ -17,6 +17,8 @@ interface SKU {
 interface PlanningData {
   store: string;
   sku: string;
+  price: number;
+  cost: number;
   [key: string]: number | string;
 }
 
