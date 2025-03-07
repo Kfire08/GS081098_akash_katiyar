@@ -1,14 +1,25 @@
+export const calculateSalesDollars = (units: number, price: number): number => {
+  return units * price;
+};
+
 export const calculateGMDollars = (
-  salesUnits: number,
-  price: number,
+  salesDollars: number,
+  units: number,
   cost: number
-) => {
-  return salesUnits * price - salesUnits * cost;
+): number => {
+  return salesDollars - units * cost;
 };
 
 export const calculateGMPercentage = (
   gmDollars: number,
   salesDollars: number
-) => {
-  return salesDollars !== 0 ? (gmDollars / salesDollars) * 100 : 0;
+): number => {
+  return (gmDollars / salesDollars) * 100;
+};
+
+export const getGMPercentageColor = (gmPercentage: number): string => {
+  if (gmPercentage >= 40) return "green";
+  if (gmPercentage >= 10) return "yellow";
+  if (gmPercentage >= 5) return "orange";
+  return "red";
 };
