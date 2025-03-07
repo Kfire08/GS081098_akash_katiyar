@@ -42,7 +42,7 @@ const SKUs = () => {
     {
       headerName: "",
       field: "actions",
-      width: 40,
+      width: 50,
       cellRenderer: (params: any) => (
         <button
           className="cursor-pointer mt-[8px]"

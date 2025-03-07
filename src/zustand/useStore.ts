@@ -14,9 +14,16 @@ interface SKU {
   cost: number;
 }
 
+interface PlanningData {
+  store: string;
+  sku: string;
+  [key: string]: number | string;
+}
+
 interface StoreState {
   stores: Store[];
   skus: SKU[];
+  planningData: PlanningData[];
   addStore: (store: Store) => void;
   removeStore: (id: number) => void;
   updateStore: (store: Store) => void;
@@ -25,6 +32,7 @@ interface StoreState {
   removeSKU: (id: number) => void;
   updateSKU: (sku: SKU) => void;
   setSKUs: (skus: SKU[]) => void;
+  setPlanningData: (data: PlanningData[]) => void;
 }
 
 export const useStore = create<StoreState>((set) => ({
@@ -38,6 +46,7 @@ export const useStore = create<StoreState>((set) => ({
     { id: 2, sku: "SKU 102", price: 20.0, cost: 10.0 },
     // Add initial SKUs here
   ],
+  planningData: [],
   addStore: (store) => set((state) => ({ stores: [...state.stores, store] })),
   removeStore: (id) =>
     set((state) => ({
@@ -60,4 +69,5 @@ export const useStore = create<StoreState>((set) => ({
       ),
     })),
   setSKUs: (skus) => set({ skus }),
+  setPlanningData: (data) => set({ planningData: data }),
 }));

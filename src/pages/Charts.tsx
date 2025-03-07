@@ -1,53 +1,108 @@
-import React from "react";
+import React, { useState } from "react";
 import { useStore } from "../zustand/useStore";
 import {
   BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 
 const Charts = () => {
-  const { stores, skus } = useStore();
+  const { stores, planningData } = useStore();
+  const [selectedStore, setSelectedStore] = useState(stores[0]?.name || "");
 
-  const data = stores.map((store) => {
-    const storeData = { name: store.name };
-    skus.forEach((sku) => {
-      const salesUnits = Math.floor(Math.random() * 100); // Replace with actual data
-      const salesDollars = salesUnits * sku.price;
-      const gmDollars = salesDollars - salesUnits * sku.cost;
-      const gmPercentage = (gmDollars / salesDollars) * 100;
-      storeData[sku.sku] = gmPercentage;
+  const handleStoreChange = (event) => {
+    setSelectedStore(event.target.value);
+  };
+
+  const data = [];
+  for (let week = 1; week <= 52; week++) {
+    const weekData = { week: `W${week}` };
+    let totalSalesDollars = 0;
+    let totalGMDollars = 0;
+
+    planningData.forEach((row) => {
+      if (row.store === selectedStore) {
+        const salesUnits = row[`salesUnits_M1_W${week}`] || 0;
+        const salesDollars = row[`salesDollars_M1_W${week}`] || 0;
+        const gmDollars = row[`gmDollars_M1_W${week}`] || 0;
+        totalSalesDollars += salesDollars;
+        totalGMDollars += gmDollars;
+      }
     });
-    return storeData;
-  });
+
+    weekData.gmDollars = totalGMDollars;
+    weekData.gmPercentage = totalSalesDollars
+      ? (totalGMDollars / totalSalesDollars) * 100
+      : 0;
+    data.push(weekData);
+  }
 
   return (
     <div className="flex flex-col h-full p-4 bg-gray-200">
       <div className="flex-1 bg-white p-4">
-        <BarChart
-          width={800}
-          height={400}
-          data={data}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
+        <select
+          value={selectedStore}
+          onChange={handleStoreChange}
+          className="mb-4 p-2 border border-gray-300 rounded"
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {skus.map((sku) => (
-            <Bar key={sku.sku} dataKey={sku.sku} fill="#8884d8" />
+          {stores.map((store) => (
+            <option key={store.name} value={store.name}>
+              {store.name}
+            </option>
           ))}
-        </BarChart>
+        </select>
+        <ResponsiveContainer width="100%" height={600}>
+          <BarChart
+            data={data}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="week" />
+            <YAxis
+              yAxisId="left"
+              orientation="left"
+              stroke="#8884d8"
+              tickFormatter={(value) => `$${value}`}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              stroke="#ff7300"
+              tickFormatter={(value) => `${value}%`}
+            />
+            <Tooltip
+              formatter={(value, name) => {
+                if (name === "gmDollars") {
+                  return [`$${value.toFixed(2)}`, "GM Dollars"];
+                }
+                if (name === "gmPercentage") {
+                  return [`${value.toFixed(2)}%`, "GM Percentage"];
+                }
+                return value;
+              }}
+            />
+            <Legend />
+            <Bar yAxisId="left" dataKey="gmDollars" fill="#8884d8" />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="gmPercentage"
+              stroke="#ff7300"
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

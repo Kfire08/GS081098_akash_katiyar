@@ -50,7 +50,7 @@ const Stores = () => {
     {
       headerName: "",
       field: "actions",
-      width: 40,
+      width: 70,
       cellRenderer: (params: any) => (
         <button
           className="cursor-pointer mt-[8px]"
