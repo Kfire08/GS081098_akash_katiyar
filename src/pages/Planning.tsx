@@ -21,7 +21,7 @@ interface PlanningData {
 }
 
 const Planning = () => {
-  const { stores, skus, setPlanningData } = useStore();
+  const { stores, skus, planningData, setPlanningData } = useStore();
   const [rowData, setRowData] = useState<PlanningData[]>([]);
 
   useEffect(() => {
@@ -36,10 +36,27 @@ const Planning = () => {
         };
         for (let month = 1; month <= config.numberOfMonths; month++) {
           for (let week = 1; week <= 4; week++) {
-            row[`salesUnits_M${month}_W${week}`] = 0;
-            row[`salesDollars_M${month}_W${week}`] = 0;
-            row[`gmDollars_M${month}_W${week}`] = 0;
-            row[`gmPercentage_M${month}_W${week}`] = 0;
+            const salesUnits =
+              planningData.find(
+                (item) => item.store === store.name && item.sku === sku.sku
+              )?.[`salesUnits_M${month}_W${week}`] || 0;
+            const salesDollars = calculateSalesDollars(
+              Number(salesUnits),
+              sku.price
+            );
+            const gmDollars = calculateGMDollars(
+              salesDollars,
+              Number(salesUnits),
+              sku.cost
+            );
+            const gmPercentage = calculateGMPercentage(gmDollars, salesDollars);
+
+            row[`salesUnits_M${month}_W${week}`] = salesUnits;
+            row[`salesDollars_M${month}_W${week}`] = salesDollars;
+            row[`gmDollars_M${month}_W${week}`] = gmDollars;
+            row[`gmPercentage_M${month}_W${week}`] = isNaN(gmPercentage)
+              ? 0
+              : gmPercentage;
           }
         }
         data.push(row);
@@ -71,7 +88,9 @@ const Planning = () => {
       );
 
       params.api.applyTransaction({ update: [data] });
-      setPlanningData(params.api.getRowData()); // Update the planning data in Zustand store
+      const updatedData: PlanningData[] = [];
+      params.api.forEachNode((node: any) => updatedData.push(node.data));
+      setPlanningData(updatedData); // Update the planning data in Zustand store
     }
   };
 
