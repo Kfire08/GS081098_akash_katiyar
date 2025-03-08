@@ -21,11 +21,12 @@ interface PlanningData {
 }
 
 const Planning = () => {
-  const { stores, skus, setPlanningData } = useStore();
+  const { stores, skus, planningData, setPlanningData } = useStore();
   const [rowData, setRowData] = useState<PlanningData[]>([]);
 
   useEffect(() => {
     const data: PlanningData[] = [];
+    let planningDataIndex = 0;
     stores.forEach((store) => {
       skus.forEach((sku) => {
         const row: PlanningData = {
@@ -36,13 +37,34 @@ const Planning = () => {
         };
         for (let month = 1; month <= config.numberOfMonths; month++) {
           for (let week = 1; week <= 4; week++) {
-            row[`salesUnits_M${month}_W${week}`] = 0;
-            row[`salesDollars_M${month}_W${week}`] = 0;
-            row[`gmDollars_M${month}_W${week}`] = 0;
-            row[`gmPercentage_M${month}_W${week}`] = 0;
+            row[`salesUnits_M${month}_W${week}`] = planningData[
+              planningDataIndex
+            ]
+              ? planningData[planningDataIndex][`salesUnits_M${month}_W${week}`]
+              : 0;
+            row[`salesDollars_M${month}_W${week}`] = planningData[
+              planningDataIndex
+            ]
+              ? planningData[planningDataIndex][
+                  `salesDollars_M${month}_W${week}`
+                ]
+              : 0;
+            row[`gmDollars_M${month}_W${week}`] = planningData[
+              planningDataIndex
+            ]
+              ? planningData[planningDataIndex][`gmDollars_M${month}_W${week}`]
+              : 0;
+            row[`gmPercentage_M${month}_W${week}`] = planningData[
+              planningDataIndex
+            ]
+              ? planningData[planningDataIndex][
+                  `gmPercentage_M${month}_W${week}`
+                ]
+              : 0;
           }
         }
         data.push(row);
+        planningDataIndex++;
       });
     });
     setRowData(data);
@@ -71,7 +93,9 @@ const Planning = () => {
       );
 
       params.api.applyTransaction({ update: [data] });
-      setPlanningData(params.api.getRowData()); // Update the planning data in Zustand store
+      const updatedData: PlanningData[] = [];
+      params.api.forEachNode((node: any) => updatedData.push(node.data));
+      setPlanningData(updatedData); // Update the planning data in Zustand store
     }
   };
 
