@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -12,8 +12,16 @@ import {
 import { config } from "../config/config";
 import "./Planning.css"; // Import custom CSS file
 
+interface PlanningData {
+  store: string;
+  sku: string;
+  price: number;
+  cost: number;
+  [key: string]: any;
+}
+
 const Planning = () => {
-  const { stores, skus, planningData, setPlanningData } = useStore();
+  const { stores, skus, setPlanningData } = useStore();
   const [rowData, setRowData] = useState<PlanningData[]>([]);
 
   useEffect(() => {
@@ -68,13 +76,13 @@ const Planning = () => {
   };
 
   const generateColumns = () => {
-    const columns = [
+    const columns: any[] = [
       { headerName: "Store", field: "store", sortable: true },
       { headerName: "SKU", field: "sku", sortable: true },
     ];
 
     for (let month = 1; month <= config.numberOfMonths; month++) {
-      const monthGroup = {
+      const monthGroup: any = {
         headerName: `Month ${month}`,
         headerClass: "header-center", // Apply custom CSS class
         children: [],

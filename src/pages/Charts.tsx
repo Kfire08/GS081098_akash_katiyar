@@ -31,8 +31,6 @@ const Charts = () => {
 
     planningData.forEach((row) => {
       if (row.store === selectedStore) {
-        const salesUnits =
-          row[`salesUnits_M${Math.ceil(week / 4)}_W${week % 4 || 4}`] || 0;
         const salesDollars =
           row[`salesDollars_M${Math.ceil(week / 4)}_W${week % 4 || 4}`] || 0;
         const gmDollars =
@@ -63,7 +61,7 @@ const Charts = () => {
             </option>
           ))}
         </select>
-        <ResponsiveContainer width="100%" height={600}>
+        <ResponsiveContainer width="100%" height={500}>
           <ComposedChart
             data={data}
             margin={{

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -46,7 +46,7 @@ const SKUs = () => {
       cellRenderer: (params: any) => (
         <button
           className="cursor-pointer mt-[8px]"
-          onClick={() => handleRemoveStore(params.data.id)}
+          onClick={() => handleRemoveSKU(params.data.id)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
