@@ -1,54 +1,65 @@
-# React + TypeScript + Vite
+## Running and Testing the Code
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Prerequisites
 
-Currently, two official plugins are available:
+Ensure you have the following installed:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Node.js (version 14.x or later)
+- npm (version 6.x or later)
 
-## Expanding the ESLint configuration
+### Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Clone the repository:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+   ```bash
+   git clone https://github.com/your-repo/data-viewer.git
+   cd data-viewer
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+### Running the Development Server
+
+To start the development server with hot module replacement (HMR):
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Building for Production
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+To create a production build:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run build
 ```
+
+### Manual Testing
+
+Since automated tests are not set up, follow these steps for manual testing:
+
+1. **Start the Development Server**: Run the development server using `npm run dev`.
+2. **Open the Application**: Open your web browser and navigate to port mentioned in terminal.
+3. **Verify Functionality**: Manually verify the functionality of the application by interacting with different components and features.
+4. **Check Console for Errors**: Open the browser's developer console and check for any errors or warnings.
+5. **Test Different Scenarios**: Test various scenarios, such as adding, updating, and deleting data, to ensure the application behaves as expected.
+
+## Achievements
+
+### Elements Done Well
+
+1. **TypeScript Integration**: The project is fully typed with TypeScript, ensuring type safety and reducing runtime errors. This demonstrates proficiency in using TypeScript with React and Vite.
+2. **State Management with Zustand**: Efficiently managing state using Zustand, which is lightweight and easy to use. This shows the ability to choose and implement appropriate state management solutions.
+3. **Dynamic Column Generation**: The dynamic generation of columns in the `Planning` component based on configuration. This highlights the ability to create flexible and scalable components.
+
+### Improvements with More Time
+
+1. **Enhanced Error Handling**: Implement more robust error handling throughout the application to improve user experience and debugging.
+2. **Unit and Integration Tests**: Increase test coverage by adding more unit and integration tests to ensure the reliability of the application.
+3. **Performance Optimization**: Optimize the performance of the application, especially in the `Planning` component, by implementing memoization and other performance enhancement techniques.
+4. **Documentation**: Expand the documentation to include more detailed explanations of the codebase, architecture, and design decisions to make it easier for new developers to onboard.
+
+These improvements would enhance the overall quality, maintainability, and performance of the application.
