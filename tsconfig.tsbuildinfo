@@ -1,1 +1,0 @@
-{"root":["./src/app.tsx","./src/declarations.d.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/navbar.tsx","./src/components/sidebar.tsx","./src/config/config.ts","./src/pages/charts.tsx","./src/pages/planning.tsx","./src/pages/skus.tsx","./src/pages/stores.tsx","./src/utils/calculations.ts","./src/zustand/usestore.ts"],"version":"5.7.3"}
