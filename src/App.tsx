@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar.tsx";
-import Sidebar from "./components/Sidebar.tsx";
-import Stores from "./pages/Stores.tsx";
-import SKUs from "./pages/SKUs.tsx";
-import Planning from "./pages/Planning.tsx";
-import Charts from "./pages/Charts.tsx";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import Stores from "./pages/Stores";
+import SKUs from "./pages/SKUs";
+import Planning from "./pages/Planning";
+import Charts from "./pages/Charts";
 
 const App = () => {
   return (
