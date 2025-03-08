@@ -26,7 +26,6 @@ const Planning = () => {
 
   useEffect(() => {
     const data: PlanningData[] = [];
-    let planningDataIndex = 0;
     stores.forEach((store) => {
       skus.forEach((sku) => {
         const row: PlanningData = {
@@ -37,34 +36,30 @@ const Planning = () => {
         };
         for (let month = 1; month <= config.numberOfMonths; month++) {
           for (let week = 1; week <= 4; week++) {
-            row[`salesUnits_M${month}_W${week}`] = planningData[
-              planningDataIndex
-            ]
-              ? planningData[planningDataIndex][`salesUnits_M${month}_W${week}`]
-              : 0;
-            row[`salesDollars_M${month}_W${week}`] = planningData[
-              planningDataIndex
-            ]
-              ? planningData[planningDataIndex][
-                  `salesDollars_M${month}_W${week}`
-                ]
-              : 0;
-            row[`gmDollars_M${month}_W${week}`] = planningData[
-              planningDataIndex
-            ]
-              ? planningData[planningDataIndex][`gmDollars_M${month}_W${week}`]
-              : 0;
-            row[`gmPercentage_M${month}_W${week}`] = planningData[
-              planningDataIndex
-            ]
-              ? planningData[planningDataIndex][
-                  `gmPercentage_M${month}_W${week}`
-                ]
-              : 0;
+            const salesUnits =
+              planningData.find(
+                (item) => item.store === store.name && item.sku === sku.sku
+              )?.[`salesUnits_M${month}_W${week}`] || 0;
+            const salesDollars = calculateSalesDollars(
+              Number(salesUnits),
+              sku.price
+            );
+            const gmDollars = calculateGMDollars(
+              salesDollars,
+              Number(salesUnits),
+              sku.cost
+            );
+            const gmPercentage = calculateGMPercentage(gmDollars, salesDollars);
+
+            row[`salesUnits_M${month}_W${week}`] = salesUnits;
+            row[`salesDollars_M${month}_W${week}`] = salesDollars;
+            row[`gmDollars_M${month}_W${week}`] = gmDollars;
+            row[`gmPercentage_M${month}_W${week}`] = isNaN(gmPercentage)
+              ? 0
+              : gmPercentage;
           }
         }
         data.push(row);
-        planningDataIndex++;
       });
     });
     setRowData(data);
