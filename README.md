@@ -1,3 +1,5 @@
+Deployed Website: https://gsynergy-data-viewer.web.app
+
 ## Running and Testing the Code
 
 ### Prerequisites
